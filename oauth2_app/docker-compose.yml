@@ -19,7 +19,7 @@ services:
       - oauth2
 
   db:
-    image: mysql:latest
+    image: mysql:8.0
     container_name: oauth2-db
     restart: always
     ports:
