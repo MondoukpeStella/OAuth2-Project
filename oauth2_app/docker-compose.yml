@@ -7,19 +7,23 @@ services:
         uid: 1000
       context: ./
       dockerfile: Dockerfile
-    image: oauth
-    container_name: oauth-app
-    restart: unless-stopped
+    image: oauth2
+    ports:
+      - 8080:8000
+    container_name: oauth2-app
+    restart: always
     working_dir: /var/www/
     volumes:
       - ./:/var/www
     networks:
-      - oauth
+      - oauth2
 
   db:
-    image: mysql:8.0
-    container_name: oauth-db
-    restart: unless-stopped
+    image: mysql:latest
+    container_name: oauth2-db
+    restart: always
+    ports:
+      - 3308:3306
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
@@ -30,20 +34,20 @@ services:
     volumes:
       - ./docker-compose/mysql:/docker-entrypoint-initdb.d
     networks:
-      - oauth
+      - oauth2
 
   nginx:
     image: nginx:alpine
-    container_name: travellist-nginx
-    restart: unless-stopped
+    container_name: oauth2-nginx
+    restart: always
     ports:
       - 8000:80
     volumes:
       - ./:/var/www
       - ./docker-compose/nginx:/etc/nginx/conf.d/
     networks:
-      - oauth
+      - oauth2
 
 networks:
-  oauth:
+  oauth2:
     driver: bridge
